@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secure-demo
+  namespace: demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: secure-demo
+  template:
+    metadata:
+      labels:
+        app: secure-demo
+    spec:
+      serviceAccountName: demo-sa
+      containers:
+        - name: secure-demo
+          image: ghcr.io/benjakunee17/secure-demo:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: APP_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: secure-demo-config
+                  key: APP_NAME
+            - name: ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: secure-demo-config
+                  key: ENV

@@ -1,0 +1,32 @@
+# ServiceAccount
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: demo-sa
+  namespace: demo
+---
+# Role (จำกัดสิทธิ์ใน namespace)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: demo-role
+  namespace: demo
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+---
+# Bind role กับ service account
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: demo-binding
+  namespace: demo
+subjects:
+  - kind: ServiceAccount
+    name: demo-sa
+    namespace: demo
+roleRef:
+  kind: Role
+  name: demo-role
+  apiGroup: rbac.authorization.k8s.io
